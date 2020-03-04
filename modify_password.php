@@ -1,12 +1,16 @@
 <?php
 	require_once 'php_function/general.php'; //general php function
 	require_once 'php_function/function_report.php';
-	
+
 	/*get user information*/
 	$user_name = $_SESSION["sess_uname"];
 	$user_id = $_SESSION["sess_uid"];
 	$user_grroup = $_SESSION["sess_ugroup"];
 
+	if($user_grroup == 2)
+	{
+		header("Location: index.php");
+	}
 	//var_dump($user_name);
 	/*2 level user cannnot visit this page*/
 	if($user_grroup == 2)
