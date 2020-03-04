@@ -56,14 +56,18 @@
 		function doUserRegister()
 		{
 			 var email = login_frm.u_email.value;
-			 var passwd = login_frm.u_password.value;
-			 var cont = 'email='+email+'&passwd='+passwd;
-			 //alert(cont);
+			 var password = login_frm.u_password.value;
+			 //alert(passwd);
+			 //var cont = {"email": "1234", "passwd": "1234"};//
+			 var cont = {"email":email,"passwd":password};
+			 const conte = JSON.stringify(cont);
+			 //console.log()
+			 //alert(conte);
 			 path = '/test5/register.php'
 			$.ajax({
 			    url: path,
 			    type: "POST",
-			    data: cont,
+			    data: conte,
 			    contentType: 'charset=UTF-8',
 			    success: function(result){ 
        				alert("Success"); 
@@ -94,7 +98,6 @@
 			<span id="PwError" class="red">&nbsp;</span>
 			<br><input class="btn" type="submit" name="login_btn" value="Sign In">
 
-			
 		</form>
 		<button class="btn" onclick="doUserRegister();">Register</button>
 	</body>
