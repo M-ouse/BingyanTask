@@ -1,91 +1,25 @@
 <?php
 	require_once 'php_function/general.php'; //general php function
-	/*get the url parameter string*/
-	reset ($_GET);
-	$qr_string = "?";
-	while (list ($key, $val) = each ($_GET)) {
-		$qr_string .= "$key=$val&";
-	}
-	$_SESSION['qr_string'] = $qr_string;
-	$user_grroup = $_SESSION["sess_ugroup"];
-	if($user_grroup == 2)
-	{
-		header("Location: index.php");
-	}
-	/*end - get the url parameter string*/
-
-	/*initialise variable*/
-	$where = " WHERE 1=1 ";
 	
-	//product that need to re-order
-	if(isset($_GET["type"])){
-		$type = $_GET["type"];
-		
-		if($type == "reorder"){
-			$title = "(To re-order)";
-			$where = " AND inv_qty < 10 ";
-		}
-	}
-	//end - product that need to re-order
+	//for the inventory level
+	$sql_product_available = "SELECT COUNT(1) FROM mst_medicine INNER JOIN inventory ON drug_id = inv_prd_id WHERE inv_qty > 0;";
+	$result_product_available = $conn->query($sql_product_available);
+	list($product_available) = $result_product_available->fetch_row();
 	
-	/*search function*/
-	if(isset($_GET["f_med_submit"])){
-		//echo $Status;
-		if($f_med_id != ""){
-			$where .= " AND drug_id = '$f_med_id' ";
-		}
-		if($f_med_name != ""){
-			//$where .= " AND name LIKE '%".trim($f_med_name)."%'";
-			$where .= " AND name = '$f_med_name' ";
-		}
-		if($model != ""){
-			$where .= " AND model = '$model' ";
-		}
-		if($CreateDate != ""){
-			$where .= " AND createDate = '$CreateDate' ";
-		}
-		if($Status != ""){
-			$where .= " AND status = '$Status' ";
-		}
-		/*if((!is_numeric($f_med_id) && $f_med_id != "") || (!is_numeric($f_med_name) && $f_med_name != "") || (!is_numeric($model) && $model != "") || (!is_numeric($CreateDate) && $CreateDate != "") || (!is_numeric($Status) && $Status != "")){
-			$where .= "AND 1 != 1";
-		}*/
-	}
-	/*end - search function*/
+	$sql_total_qty = "SELECT SUM(inv_qty) FROM inventory;";
+	$result_total_qty = $conn->query($sql_total_qty);
+	list($total_qty) = $result_total_qty->fetch_row();
 	
-	/*sort function*/
-	if(isset($_GET["sort"])){
-		$sort = $_GET["sort"];
-		if($sort == "medid"){
-			$sortby = "drug_id,";
-		}
-		else if($sort == "medname"){
-			$sortby = "drug_name,";
-		}
-		else if($sort == "meddosage"){
-			$sortby = "drug_dosage,";
-		}
-		else if($sort == "medform"){
-			$sortby = "drug_form,";
-		}
-		else if($sort == "medcost"){
-			$sortby = "drug_cost,";
-		}
-		else if($sort == "medprice"){
-			$sortby = "drug_price,";
-		}
-		else if($sort == "medamount"){
-			$sortby = "inv_qty,";
-		}
-	}
-	/*end - sort*/
+	$sql_reorder_required = "SELECT COUNT(1) FROM inventory WHERE inv_qty < 10;";
+	$result_reorder_required = $conn->query($sql_reorder_required);
+	list($reorder_required) = $result_reorder_required->fetch_row();
+	//end inventory level
 ?>
 
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Products Listing | Management System</title>
-		<link href="css/general.css" rel="stylesheet" type="text/css"/>
+		<title>Main Menu | Inventory Management System</title>
 		<link rel="shortcut icon" href="img/bluepharmacy_icon.png"/>
 		<link rel="stylesheet" href="css/menubar.css">
 		<link href="css/menu.css" rel="stylesheet" />
@@ -101,10 +35,7 @@
                    
 <?php
 	require_once 'php_function/general.php'; //general php function
-	if($user_grroup == 2)
-	{
-		header("Location: index.php");
-	}
+
 	echo  "<p>". $_SESSION["sess_uname"] ."</p>" ; 
 ?>
 
@@ -112,7 +43,7 @@
 
             <ul class=" puerto-menu nav">
 		<li>
-			<a href="inv_menu.php" target="_self" >
+			<a href="inv_menu.php" target="_self" class="active">
 
 				<p>
 					<strong>Home</strong>
@@ -121,7 +52,7 @@
 			</a>
 		</li>
 		<li>
-			<a href="inv_lst_med.php" target="_self" class="active" >
+			<a href="inv_lst_med.php" target="_self" >
 
 				<p>
 					<strong>Products</strong>
@@ -137,7 +68,8 @@
 				</p>
 			</a>
 			<ul>
-				<li><a href="trans_stockinout.php?mode=in" target="_self"></i>New</a></li>
+				<li>
+					<a href="trans_stockinout.php?mode=in" target="_self"></i>New</a></li>
 				<li>
 					<a href="trans_stockinout.php?mode=out" target="_self">Update</a>
 					
@@ -152,16 +84,20 @@
 				</p>
 			</a>
 			<ul>
-				<li><a href="rpt_sales.php" target="_self"></i>Report</a></li>
+				<li>
+					<li>
+					<a href="rpt_sales.php" target="_self"></i>Report</a></li>
 				<li>
 					<a href="rpt_stockinout.php?mode=in" target="_self">New</a>
 					
 				</li>
 				<li><a href="rpt_stockinout.php?mode=out" target="_self">Update</a></li>
+				
+		</li>
+		
 			</ul>
 		</li>
-				
-				<li <?php echo $hidden_userlist; ?>>
+		<li <?php echo $hidden_userlist; ?>>
 			<a href="mst_lst_user.php" target="_self">
 
 				<p>
@@ -170,6 +106,7 @@
 				</p>
 			</a>
 			</li>
+				
 				<li class="active-pro">
 	<a href="general_html/logout.php" target="_self">Logout</a>
                 </li>
@@ -178,62 +115,42 @@
     	</div>
     </div>
 	
-	
 	<div class="main-panel">
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header navbar-brand">
-Products Listing  | Management System
+Main Menu | Inventory Management System
                 </div>
             </div>
         </nav>
-	
-	
-	
-		<div class="content">
+
+
+        <div class="content">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card">
-                            <div class="content table">
-		<form name="search_form" method="get" action="">
-
-			<table>
-				<h3>Search Product</h3>
-				<tr>
-					<td>ID:</td>
-					<td colspan="3"><input type="text" name="f_med_id" size="30" value="<?php echo $f_med_id; ?>"></td>
-				</tr>
-				<tr>
-					<td>Name:</td>
-					<td colspan="3"><input type="text" name="f_med_name" size="30" value="<?php echo $f_med_name; ?>"></td>
-				</tr>
-				<tr>
-					<td>Model:</td>
-					<td><input type="text" name="model" size="10" value="<?php echo $model; ?>"></td>
-				</tr>
-				<tr>
-					<td>CreateDate:</td>
-					<td><input type="text" name="CreateDate" size="10" value="<?php echo $CreateDate; ?>"></td>
-				</tr>
-				<tr>
-					<td>Status:</td>
-					<td><input type="text" name="Status" size="10" value="<?php echo $Status; ?>"></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td colspan="3">
-						<input type="submit" name="f_med_submit" value="Search">
-						<input type="reset" name="f_med_reset" value="Reset">
-					</td>
-				</tr>
-			</table>
-			</div></div></div> 
-          
+                            <div class="header">
+                                <strong>Current Inventory</strong>
+                            </div>
+                            <div class="content table-responsive table table-striped">
+		<table>
+			<tr>
+				<th>Product Available</th>
+				<th>Quantity</th>
+				<th>Product to Re-Order</th>
+			</tr>
+			<tr>
+				<td><?php echo $product_available; ?></td>
+				<td><?php echo $total_qty; ?></td>
+				<td><a href="inv_lst_med.php?type=reorder" target="_self"><?php echo $reorder_required; ?></a></td>
+			</tr>
+		</table>
+		  </div>
+                        </div>
+                    </div>
 		
-			
-			<input type="hidden" name="type" value="<?php echo $type ?>"/>
-		</form>
-		<!--end filter-->
+		
 		
 		<!--medicines listing-->
 		<div class="content">
@@ -242,7 +159,7 @@ Products Listing  | Management System
                         <div class="card">
                           <div class="content table-responsive  table table-striped">
 		<table>
-			<h3>Products Listing <a style="font-size:20px;float:right;padding-right:30px;"href="inv_maint_med.php" target="_self">Add New</a><?php echo $title ?></h3>
+			<!-- <h3>Products Listing <a style="font-size:20px;float:right;padding-right:30px;"href="inv_maint_med.php" target="_self">Add New</a><?php echo $title ?></h3> -->
 			<tr>
 				<th><a href="inv_lst_med.php<?php echo $qr_string."sort=medid" ?>" target="_self">ID</a></th>
 				<th><a href="inv_lst_med.php<?php echo $qr_string."sort=medname" ?>" target="_self">Name</a></th>
@@ -286,7 +203,7 @@ Products Listing  | Management System
 					echo 
 					"
 					<tr>
-						<th><a href='inv_maint_med.php?drugid=".$row["drug_id"]."' target='_self'>".$row["drug_id"]."</a></th>
+						<td>".$row["drug_id"]."</td>
 						<td>".$row["name"]."</td>
 						<td>".date('Y-m-s h:i:s',$row["create_date"])."</td>
 						<td>".$row["status"]."</td>
@@ -335,8 +252,69 @@ Products Listing  | Management System
 		}
 		/*end pagination*/
 		?>
-	
+			
+			
+			
+ <!-- <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+						<div class="header">
+                                <strong>Top 10 Sales This Month (By Quantity)</strong>
+                            </div>
+                            <div class="content table-responsive  table table-striped">
+                                <?php
+			$sql_top10 = "SELECT
+								CASE WHEN (drug_form = '' OR drug_form IS NULL) AND (drug_dosage = '' OR drug_dosage IS NULL)
+								THEN drug_name
+								ELSE CASE WHEN drug_form = '' OR drug_form IS NULL 
+								THEN CONCAT(drug_name,' (',drug_dosage,')')
+								ELSE CASE WHEN drug_dosage = '' OR drug_dosage IS NULL
+								THEN CONCAT(drug_name,' (',drug_form,')')
+								ELSE CONCAT(drug_name,' (',drug_dosage,' ',drug_form,')') END END END
+								AS drug, 
+								SUM(trans_qty_out) AS total_qty,
+								(SUM(trans_qty_out) * (drug_price-drug_cost)) AS total_profit
+								FROM transactions
+								INNER JOIN mst_medicine
+								ON trans_prd_id = drug_id
+								WHERE (trans_qty_out != 0 OR trans_qty_out IS NOT NULL)
+								AND YEAR(NOW()) = YEAR(trans_date) AND MONTH(NOW()) = MONTH(trans_date)
+								GROUP BY trans_prd_id
+								ORDER BY SUM(trans_qty_out) DESC, drug ASC
+								LIMIT 10;";
+			$result_top10 = $conn->query($sql_top10);
 
-		<!--end medicines listing-->
-	</body>
+			if ($result_top10->num_rows > 0) {
+				
+				echo 
+				"
+				<table>
+					<tr>
+						<td>Medicine</td>
+						<td>Sold Quantity</td>
+						<td>Total Profit</td>
+					</tr>
+				";
+				
+				while($row = $result_top10->fetch_assoc()){
+					echo 
+					"
+					<tr>
+						<td>".$row["drug"]."</td>
+						<td>".$row["total_qty"]."</td>
+						<td>".$row["total_profit"]."</td>
+					</tr>
+					";
+				}
+				
+				echo "</table>";
+				echo "<br/>";
+			}
+		?>
+                            </div>
+                        </div>
+                    </div>
+	</body> -->
 </html>
