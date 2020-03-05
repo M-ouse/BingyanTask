@@ -35,8 +35,8 @@
 			$where .= " AND drug_id = '$f_med_id' ";
 		}
 		if($f_med_name != ""){
-			//$where .= " AND name LIKE '%".trim($f_med_name)."%'";
-			$where .= " AND name = '$f_med_name' ";
+			$where .= " AND name LIKE '%".trim($f_med_name)."%'";
+			//$where .= " AND name = '$f_med_name' ";
 		}
 		if($model != ""){
 			$where .= " AND model = '$model' ";
@@ -242,7 +242,7 @@ Products Listing  | Management System
                         <div class="card">
                           <div class="content table-responsive  table table-striped">
 		<table>
-			<h3>Products Listing <a style="font-size:20px;float:right;padding-right:30px;"href="inv_maint_med.php" target="_self">Add New</a><?php echo $title ?></h3>
+			<h3>Products Listing <a style="font-size:20px;float:right;padding-right:30px;"href="history.php" target="_self">History</a><?php echo $title ?></h3>
 			<tr>
 				<th><a href="inv_lst_med.php<?php echo $qr_string."sort=medid" ?>" target="_self">ID</a></th>
 				<th><a href="inv_lst_med.php<?php echo $qr_string."sort=medname" ?>" target="_self">Name</a></th>
@@ -273,7 +273,7 @@ Products Listing  | Management System
 							ORDER BY $sortby drug_id ASC
 							LIMIT $start_from,$per_page
 							;";*/
-			$sql_med_lst = "SELECT drug_id, name, create_date, status
+			$sql_med_lst = "SELECT drug_id, name, create_date, status,deleted
 							FROM mst_medicine
 							$where
 							;";
@@ -283,15 +283,18 @@ Products Listing  | Management System
 			//list down the records
 			if ($result_med_lst->num_rows > 0) {				
 				while($row = $result_med_lst->fetch_assoc()){
-					echo 
-					"
-					<tr>
-						<th><a href='inv_maint_med.php?drugid=".$row["drug_id"]."' target='_self'>".$row["drug_id"]."</a></th>
-						<td>".$row["name"]."</td>
-						<td>".date('Y-m-s h:i:s',$row["create_date"])."</td>
-						<td>".$row["status"]."</td>
-					</tr>
-					";
+					if($row['deleted'] == 0)
+					{
+						echo 
+						"
+						<tr>
+							<th><a href='inv_maint_med.php?drugid=".$row["drug_id"]."' target='_self'>".$row["drug_id"]."</a></th>
+							<td>".$row["name"]."</td>
+							<td>".date('Y-m-s h:i:s',$row["create_date"])."</td>
+							<td>".$row["status"]."</td>
+						</tr>
+						";
+					}
 				}
 			}
 			else{
