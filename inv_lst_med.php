@@ -42,7 +42,13 @@
 			$where .= " AND model = '$model' ";
 		}
 		if($CreateDate != ""){
-			$where .= " AND createDate = '$CreateDate' ";
+			$CreateDate = strtotime($CreateDate);
+			//var_dump($CreateDate);
+			/*$max_time = $CreateDate+86400;
+			$min_time = $CreateDate-86400;*/
+			$max_time = $CreateDate+86400;
+			$min_time = $CreateDate-86400;
+			$where .= " AND (create_date <= '$max_time' AND create_date >= '$min_time')";
 		}
 		if($Status != ""){
 			$where .= " AND status = '$Status' ";
@@ -213,7 +219,7 @@ Products Listing  | Management System
 				</tr>
 				<tr>
 					<td>CreateDate:</td>
-					<td><input type="text" name="CreateDate" size="10" value="<?php echo $CreateDate; ?>"></td>
+					<td><input type="date" name="CreateDate" size="10" value="<?php echo $CreateDate; ?>"></td>
 				</tr>
 				<tr>
 					<td>Status:</td>
@@ -242,7 +248,8 @@ Products Listing  | Management System
                         <div class="card">
                           <div class="content table-responsive  table table-striped">
 		<table>
-			<h3>Products Listing <a style="font-size:20px;float:right;padding-right:30px;"href="history.php" target="_self">History</a><?php echo $title ?></h3>
+			<h3>Products Listing <a style="font-size:20px;float:right;padding-right:30px;"href="history.php" target="_self">History</a>
+				<a style="font-size:20px;float:right;padding-right:30px;"href="bin.php" target="_self">Bin</a><?php echo $title ?></h3>
 			<tr>
 				<th><a href="inv_lst_med.php<?php echo $qr_string."sort=medid" ?>" target="_self">ID</a></th>
 				<th><a href="inv_lst_med.php<?php echo $qr_string."sort=medname" ?>" target="_self">Name</a></th>
@@ -290,7 +297,7 @@ Products Listing  | Management System
 						<tr>
 							<th><a href='inv_maint_med.php?drugid=".$row["drug_id"]."' target='_self'>".$row["drug_id"]."</a></th>
 							<td>".$row["name"]."</td>
-							<td>".date('Y-m-s h:i:s',$row["create_date"])."</td>
+							<td>".date('Y-m-d h:m:s',$row["create_date"])."</td>
 							<td>".$row["status"]."</td>
 						</tr>
 						";
@@ -309,12 +316,12 @@ Products Listing  | Management System
 		
 		<?php
 		/*pagination*/
-		$sql_total_line = "SELECT COUNT(1)
+		/*$sql_total_line = "SELECT COUNT(1)
 						FROM mst_medicine
 						INNER JOIN inventory ON inv_prd_id = drug_id 
 						$where";
 		$result_total_line = $conn->query($sql_total_line);
-		list($total_line) = $result_total_line->fetch_row(); //total of the records
+		list($total_line) = $result_total_line->fetch_row(); //total of the records*/
 
 		//Using ceil function to divide the total records on per page
 		$total_pages = ceil($total_line / $per_page);

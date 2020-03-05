@@ -36,7 +36,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Product Details | Inventory Management System</title>
+		<title>Bin Details | Inventory Management System</title>
 		
 		<link rel="stylesheet" href="css/menubar.css">
 		<link href="css/menu.css" rel="stylesheet" />
@@ -127,7 +127,7 @@
 			<a href="inv_lst_med.php" target="_self"  class="active">
 
 				<p>
-					<strong>Medicines</strong>
+					<strong>Bin</strong>
 					<small>listing</small>
 				</p>
 			</a>
@@ -186,7 +186,7 @@
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header navbar-brand">
-<?php echo $title; ?> Medicine Details | Inventory Management System
+<?php echo $title; ?> Bin Details | Inventory Management System
                 </div>
             </div>
         </nav>
@@ -206,33 +206,33 @@
 				
 				<tr <?php echo $drug_id_field; ?>>
 					<td>ID: </td>
-					<td><input type="text" name="med_id" size="20" value="<?php echo $drug_id; ?>" readonly /></td>
+					<td><input type="text" name="med_id" size="21" value="<?php echo $drug_id; ?>" readonly /></td>
 				</tr>
 				<tr>
 					<td>Name: </td>
-					<td><input type="text" name="Name"  size="20" value="<?php echo $Name; ?>"/></td>
+					<td><input type="text" name="Name"  size="21" value="<?php echo $Name; ?>"/></td>
 				</tr>
 				<tr>
 					<td>Model</td>
-					<td><input type="text" name="Model" value="<?php echo $Model; ?>" size="20"/></td>
+					<td><input type="text" name="Model" value="<?php echo $Model; ?>" size="21"/></td>
 				</tr>
 				<tr>
 					<td>Price</td>
-					<td><input type="text" name="Price" value="<?php echo $Price; ?>" size="20"/></td>
+					<td><input type="text" name="Price" value="<?php echo $Price; ?>" size="21"/></td>
 				</tr>
 				<tr>
 					<td>Status</td>
-					<td><input type="text" name="Status" value="<?php echo $Status; ?>" size="20"/></td>
+					<td><input type="text" name="Status" value="<?php echo $Status; ?>" size="21"/></td>
 				</tr>
 				<tr>
 					<td>Count</td>
-					<td><input type="text" name="Count" value="<?php echo $Count; ?>" size="20"/></td>
+					<td><input type="text" name="Count" value="<?php echo $Count; ?>" size="21"/></td>
 				</tr>
 				<tr>
 					<td></td>
 					<td>
 						<input type="submit" name="maint_med_submit" value="Save"/>
-						<input type="submit" name="maint_med_delete" value="Delete" <?php echo $delete_btn; ?>/>
+						<input type="submit" name="maint_med_delete" value="Recover" <?php echo $delete_btn; ?>/>
 						<input type="submit" name="maint_med_cancel" value="Cancel"/>
 					</td>
 				</tr>
@@ -317,13 +317,13 @@
 		$staff = $_SESSION["sess_uname"];
 		$arg = array($drugid);
 		$detail = json_encode($arg);
-		$sql_add_history = "INSERT INTO history (staff,cmd,detail) VALUES ('$staff','DELETED','$detail');";
+		$sql_add_history = "INSERT INTO history (staff,cmd,detail) VALUES ('$staff','RECOVERED','$detail');";
 		$conn->query($sql_add_history);
 		//var_dump($sql_add_history);
-		$sql_delete_med = 'UPDATE mst_medicine SET deleted = "1" WHERE drug_id = "'.$drugid.'"';
+		$sql_delete_med = 'UPDATE mst_medicine SET deleted = "0" WHERE drug_id = "'.$drugid.'"';
 		$conn->query($sql_delete_med);
 		//echo $sql_delete_med;
-		echo "<script>alert('Record Deleted');location.assign('inv_lst_med.php".$qr_string."');</script>";		
+		echo "<script>alert('Record Recovered');location.assign('inv_lst_med.php".$qr_string."');</script>";		
 	}
 	else if(isset($_POST["maint_med_cancel"])){ //if cancel button clicked
 		echo "<script>location.assign('inv_lst_med.php".$qr_string."');</script>";	

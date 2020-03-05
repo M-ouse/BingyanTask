@@ -70,7 +70,7 @@
 			    data: conte,
 			    contentType: 'charset=UTF-8',
 			    success: function(result){ 
-       				alert("Success"); 
+       				//alert("Success"); 
     			}
 			  });
 		}

@@ -108,9 +108,9 @@
 				</p>
 			</a>
 			<ul>
-				<li><a href="trans_stockinout.php?mode=in" target="_self"></i>Stock In</a></li>
+				<li><a href="trans_stockinout.php?mode=in" target="_self"></i>New</a></li>
 				<li>
-					<a href="trans_stockinout.php?mode=out" target="_self">Stock Out</a>
+					<a href="trans_stockinout.php?mode=out" target="_self">Update</a>
 					
 				</li>
 			</ul>
@@ -204,6 +204,7 @@
 			<input style="float:right"type="button" value="Cancel" onclick="cancel_button();"/>
 			<input style="float:right"type="submit" name="submit_stockin" value="Confirm" onclick="DoData();"/>
 		</form>
+		<a href="batch_upload.php"><button>Batch Upload</button></a>
 	</body>
 </html>
 
@@ -214,7 +215,7 @@
 	{
 
 		/*insert date*/
-		$date = date("Y-m-d");
+		$date = time();
 		
 		/*insert time*/
 
@@ -227,9 +228,22 @@
  
 		if($title = "New");
 		{
-			$sql_insert_trans = "INSERT INTO mst_medicine (name,model,price,status,count,create_date,update_date,comment) VALUES ('$name','$model','$price','$status','$count','$date','$date','$comment');";
+
+			$sql_insert_trans = "INSERT INTO mst_medicine (name,model,price,status,count,create_date,update_date,comment,staff) VALUES ('$name','$model','$price','$status','$count','$date','$date','$comment','$user_name');";
 			$conn->query($sql_insert_trans);
-			echo $sql_insert_trans;
+			//echo $sql_insert_trans;
+
+			//insert hisory
+
+
+			$sql_query_last = "SELECT drug_id FROM mst_medicine ORDER BY drug_id DESC LIMIT 1;";
+			$result = $conn->query($sql_query_last);
+			$arg = $result->fetch_assoc();
+			//echo $arg['drug_id'];
+			
+			$detail = json_encode(array($arg['drug_id'],$count));
+			$sql_add_history = "INSERT INTO history (staff,cmd,detail) VALUES ('$user_name','CREATE','$detail');";
+			$conn->query($sql_add_history);
 		}
 		/*insert into database*/
 		
