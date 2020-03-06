@@ -109,7 +109,8 @@
 	{
 		$user_email		= $_POST["u_email"];
 		$user_password 	= $_POST["u_password"];
-		
+		$_SESSION["email"] = $user_email;
+		//echo $SESSION["email"];
 		$user_password = md5($user_password); //password encryption
 		
 		//vunerable by sql injection attack

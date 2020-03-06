@@ -44,20 +44,25 @@
 	$dataArr = array();
 	/* 循环读取每个单元格的数据 */
 	//行数循环
-
+	echo "<table border='1' align = left>";
 	for ($row = 1; $row <= $rowCount; $row++)
 	{//start from line2
 	//列数循环 , 列数是以A列开始
+		echo "<tr>";
 	    for ($column = 'A'; $column <= $columnCount; $column++)
 	    {
 	        $dataArr[] = $objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue();
 	        //echo $column.$row.":".$objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue()."<br />";
-	        echo $objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue();
-	        echo " | ";
+	        //echo $objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue();
+	        //echo "<th>".$objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue()."</th>";
+	        echo 
+	        "
+			    	<td>".$objPHPExcel->getActiveSheet()->getCell($column.$row)->getValue()."</td>
+	        ";
 	    //var_dump($arg);
 
 	    }
-	    echo "<br />";
+	    echo "</tr>";
 			//echo $sql_insert_trans."<br>";
 			//insert hisory
 			//echo $arg['drug_id'];
@@ -69,6 +74,7 @@
 		    //var_dump($dataArr);
 	    	$dataArr = NULL;
 	}
+	echo "</table>";
 ?>
 <!DOCTYPE html>
 <html>

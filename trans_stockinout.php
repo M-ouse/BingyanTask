@@ -240,6 +240,13 @@
 			$result = $conn->query($sql_query_last);
 			$arg = $result->fetch_assoc();
 			//echo $arg['drug_id'];
+
+			//sbscribe
+			$email = $_SESSION["email"];
+			$drugid = $arg['drug_id'];
+			$sql_insert_sub = "INSERT INTO subscribe (id,email) VALUES ('$drugid','$email');";
+			$conn->query($sql_insert_sub);
+			//email
 			
 			$detail = json_encode(array($arg['drug_id'],$count));
 			$sql_add_history = "INSERT INTO history (staff,cmd,detail) VALUES ('$user_name','CREATE','$detail');";

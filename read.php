@@ -1,5 +1,6 @@
 <?php
 	require_once 'php_function/general.php'; //general php function
+	require_once 'subscribe.php'; //subscribe fun
 	$user_name = $_SESSION["sess_uname"];
 	$user_id = $_SESSION["sess_uid"];
 	$user_grroup = $_SESSION["sess_ugroup"];
@@ -62,8 +63,11 @@
 			/*insert into database*/
 
 
-
-
+			$email = $_SESSION["email"];
+			$drugid = $arg_id['drug_id'];
+			$sql_insert_sub = "INSERT INTO subscribe (id,email) VALUES ('$drugid','$email');";
+			//echo $sql_insert_sub;
+			$conn->query($sql_insert_sub);
 		    //echo "<br/>消耗的内存为：".(memory_get_peak_usage(true) / 1024 / 1024)."M";
 		    //$endTime = time();
 		    //echo "<div>解析完后，当前的时间为：".date("Y-m-d H:i:s")."　　　

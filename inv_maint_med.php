@@ -1,5 +1,9 @@
 <?php
 	require_once 'php_function/general.php'; //general php function
+	require_once 'subscribe.php'; //subscribe fun
+	require_once 'mailer.php'; //send mail
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
 	$user_grroup = $_SESSION["sess_ugroup"];
 
 
@@ -127,7 +131,7 @@
 			<a href="inv_lst_med.php" target="_self"  class="active">
 
 				<p>
-					<strong>Medicines</strong>
+					<strong>Products</strong>
 					<small>listing</small>
 				</p>
 			</a>
@@ -290,23 +294,48 @@
 			$update_date = time();
 			$sql_edit_med = 'UPDATE mst_medicine
 							SET name="'.$Name.'", model="'.$Model.'", price="'.$Price.'", status="'.$Status.'", count="'.$Count.'",update_date="'.$update_date.'"
-							WHERE drug_id="'.$drugid.'";';
+							WHERE drug_id="'.$drugid.'";';//edit
 			
 			$conn->query($sql_edit_med);
+			
+			$email = $_SESSION["email"];
+			$sql_insert_sub = "INSERT INTO subscribe (id,email) VALUES ('$drugid','$email');";//subscribe
+			//echo $sql_insert_sub;
+			$conn->query($sql_insert_sub);
 			//echo $sql_edit_med;
 			echo "<script>
 					alert('Changes Saved');
 					location.assign('inv_lst_med.php".$qr_string."');
-				</script>";		
+				</script>";
 			if($option != -1)
 			{
 				$staff = $_SESSION["sess_uname"];
 				$arg = array($drugid,$type[$option],$type_orgi_value[$option],$type_value[$option]);
 				$detail = json_encode($arg);
 
-				$sql_add_history = "INSERT INTO history (staff,cmd,detail) VALUES ('$staff','EDIT','$detail');";
+				$sql_add_history = "INSERT INTO history (staff,cmd,detail) VALUES ('$staff','EDIT','$detail');";//history
 				//var_dump($sql_add_history);
 				$conn->query($sql_add_history);
+
+
+
+
+
+				$sql_sub_lst = "SELECT email FROM subscribe WHERE id = '$drugid';";//
+				$result_sub_lst = $conn->query($sql_sub_lst);
+				
+				if ($result_sub_lst->num_rows > 0) 			
+					while($row = $result_sub_lst->fetch_assoc())
+					{
+						{
+							//send mail to subscriber
+							$subscriber = $row["email"];
+							$ans = $staff." 修改 ".$Name.":".$drugid." ".$type[$option].":".$type_orgi_value[$option]." to ".$type_value[$option];
+							send_mail($ans,$subscriber);
+						}
+					}
+				
+
 			}
 
 		}

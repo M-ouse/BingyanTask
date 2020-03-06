@@ -106,7 +106,7 @@
 			<a href="inv_lst_med.php" target="_self" class="active" >
 
 				<p>
-					<strong>Products</strong>
+					<strong>Bin</strong>
 					<small>listing</small>
 				</p>
 			</a>

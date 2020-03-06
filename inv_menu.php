@@ -260,6 +260,8 @@ Main Menu | Inventory Management System
 							<th><a href='comment.php?name=".$row["drug_id"]."' target='_self'>".$row["name"]."</a></th>
 							<th><a href='comment.php?date=".$row["drug_id"]."' target='_self'>".date('Y-m-d h:m:s',$row["create_date"])."</th>
 							<th><a href='comment.php?status=".$row["drug_id"]."' target='_self'>".$row["status"]."</a></th>
+							<th><a href='subscribe.php?drug_id=".$row["drug_id"]."&uemail=".$_SESSION["email"]."' target='_self'>"."Subscribe"."</a></th>
+							<th><a href='cancel.php?drug_id=".$row["drug_id"]."&uemail=".$_SESSION["email"]."' target='_self'>"."Cancel"."</a></th>
 						</tr>
 						";
 					}

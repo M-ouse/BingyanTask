@@ -285,12 +285,13 @@ History Listing  | Management System
 					}
 					if($row["cmd"]=="DELETED")
 					{
-						$ans .= "Item ID:".$detail[0]." Num=".$detail[1];
+						/*$ans .= "Item ID:".$detail[0]." Num=".$detail[1];*/
+						$ans .= "Item ID:".$detail[0];
 					}
 					echo 
 					"
 					<tr>
-						<th><a href='inv_maint_med.php?drugid=".$row["ID"]."' target='_self'>".$row["ID"]."</a></th>
+						<th><a href='recover.php?cmdid=".$row["ID"]."' target='_self'>".$row["ID"]."</a></th>
 						<td>".$row["staff"]."</td>
 						<td>".$row["cmd"]."</td>
 						<td>".$ans."</td>
