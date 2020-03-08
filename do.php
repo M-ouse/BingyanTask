@@ -44,7 +44,7 @@
 	$dataArr = array();
 	/* 循环读取每个单元格的数据 */
 	//行数循环
-	echo "<table border='1' align = left>";
+	echo "<table border='1' align = center>";
 	for ($row = 1; $row <= $rowCount; $row++)
 	{//start from line2
 	//列数循环 , 列数是以A列开始
@@ -82,8 +82,10 @@
     <title>Preview</title>
     <meta charset="utf-8">
 </head>
+	<center>
     <form action="read.php" method="post">
         <input type="submit" value="提交" name="submit" >
     </form>
+    </center>
 </body>
 </html>

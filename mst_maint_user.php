@@ -154,7 +154,7 @@
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header navbar-brand">
-<?php echo $title; ?> User Details | Pharmacy Inventory Management System
+<?php echo $title; ?> User Details | Inventory Management System
                 </div>
             </div>
         </nav>

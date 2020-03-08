@@ -24,6 +24,10 @@
 							VALUES
 							("'.$uemail.'","'.$uname.'","'.$ugroup.'","'.$upw.'","1");';
 			$conn->query($sql_new_user);
+			echo "<script>
+					alert('Registered successfully!');
+					location.assign('inedx.php');
+				</script>";
 		}
 	}
 ?>

@@ -303,10 +303,10 @@
 			//echo $sql_insert_sub;
 			$conn->query($sql_insert_sub);
 			//echo $sql_edit_med;
-			echo "<script>
+			/*echo "<script>
 					alert('Changes Saved');
 					location.assign('inv_lst_med.php".$qr_string."');
-				</script>";
+				</script>";*/
 			if($option != -1)
 			{
 				$staff = $_SESSION["sess_uname"];
@@ -321,7 +321,8 @@
 
 
 
-				$sql_sub_lst = "SELECT email FROM subscribe WHERE id = '$drugid';";//
+				$sql_sub_lst = "SELECT distinct email FROM subscribe WHERE id = '$drugid';";//
+				//echo $sql_sub_lst;
 				$result_sub_lst = $conn->query($sql_sub_lst);
 				
 				if ($result_sub_lst->num_rows > 0) 			
@@ -330,6 +331,8 @@
 						{
 							//send mail to subscriber
 							$subscriber = $row["email"];
+							echo $subscriber;
+							echo "<br>";
 							$ans = $staff." 修改 ".$Name.":".$drugid." ".$type[$option].":".$type_orgi_value[$option]." to ".$type_value[$option];
 							send_mail($ans,$subscriber);
 						}

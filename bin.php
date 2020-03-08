@@ -237,8 +237,10 @@ Bin Listing  | Management System
 			
 			/*pagination*/
 			$per_page=20;
-			if(isset($_GET["page"])){
-				$page = $_GET["page"];
+			$i=1;
+			$page = 1;
+			if(isset($_GET["p"]) && $_GET["p"] != 0){
+				$page = $_GET["p"];
 			}
 			else{
 				$page=1;
@@ -246,6 +248,7 @@ Bin Listing  | Management System
 			
 			// Page will start from 0 and Multiple by Per Page
 			$start_from = ($page-1) * $per_page;
+			$end_from = $page * $per_page;
 
 			$sql_med_lst = "SELECT drug_id, name, create_date, status,deleted
 							FROM mst_medicine
@@ -257,6 +260,8 @@ Bin Listing  | Management System
 			//list down the records
 			if ($result_med_lst->num_rows > 0) {				
 				while($row = $result_med_lst->fetch_assoc()){
+					if($i++<$start_from)continue;
+					if($i>$end_from)break;
 					if($row['deleted'] == 1)
 					{
 						echo 
@@ -282,26 +287,13 @@ Bin Listing  | Management System
 		</table>
 		
 		<?php
-		$total_pages = ceil($total_line / $per_page);
-		
-		if($total_pages > 1){
-			//Going to first page
-			echo "<a href='bin.php".$qr_string."page=1'><<&nbsp;&nbsp;</a>";
-
-			for ($i=1; $i<=$total_pages; $i++) {
-				if($_GET['page']==$i)
-				{
-					$selected_page = "style='color:red;'";
-				}
-				else{
-					$selected_page = "";
-				}
-				echo "<a href='bin.php".$qr_string."page=".$i."' ".$selected_page.">".$i."&nbsp;&nbsp;</a>";
-			};
-			// Going to last page
-			echo "<a href='bin.php".$qr_string."page=$total_pages'>>>&nbsp;&nbsp;</a>";
-		}
-		/*end pagination*/
+				if($page<=1){
+			    echo "<a href='".$_SERVER['PHP_SELF']."?p=1'>上一页</a>";
+			    }else{
+			    echo "<a href='".$_SERVER['PHP_SELF']."?p=".($page-1)."'>上一页</a>";
+			}
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$_SERVER['PHP_SELF']."?p=".($page+1)."'>下一页</a>";
 		?>
 	
 

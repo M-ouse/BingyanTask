@@ -22,15 +22,17 @@
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Batch Upload</title>
-    <meta charset="utf-8">
-</head>
-    <form action="do.php" method="post" enctype="multipart/form-data">
-        <input type="file" name="excel">
-        <input type="submit" value="预览">
-    </form>
-</body>
+    <head>
+        <title>Batch Upload</title>
+        <meta charset="utf-8">
+    </head>
+        <center>
+            <form action="do.php" method="post" enctype="multipart/form-data">
+            <input type="file" name="excel">
+            <input type="submit" value="预览">
+            </form>
+        </center>
+    </body>
 </html>
 <!-- <html>
 	<title>Batch Upload</title>

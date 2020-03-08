@@ -1,9 +1,3 @@
-<?php 
-	require_once 'php_function/general.php';
-	
-	redirect_as_logged_in(); //if the uid session still exists, redirect to main page without login
-?>
-
 <!DOCTYPE html>
 <html>
 	<head>
@@ -29,18 +23,32 @@
 		
 		function check_pw() //validate the password
 		{
-			if (document.login_frm.u_password.value == "")
+			if (document.login_frm.u_password1.value == "")
 			{
-				document.getElementById('PwError').innerHTML = ' Enter your password';
+				document.getElementById('PwError1').innerHTML = ' Enter your password';
 				return false;
 			}
 			else
 			{
-				document.getElementById('PwError').innerHTML = '&nbsp;';
+				document.getElementById('PwError1').innerHTML = '&nbsp;';
 				return true;
 			}
 		}
 		
+		function check_same() //make sure the two passwords are the same
+		{
+			if (document.login_frm.u_password2.value != document.login_frm.u_password1.value)
+			{
+				document.getElementById('PwError2').innerHTML = 'Two passwords are inconsistent!';
+				return false;
+			}
+			else
+			{
+				document.getElementById('PwError2').innerHTML = '&nbsp;';
+				return true;
+			}
+		}
+
 		function validatelogin() //double validate while 'Sign In' button clicked
 		{
 			if (check_email() && check_pw())
@@ -56,7 +64,7 @@
 		function doUserRegister()
 		{
 			 var email = login_frm.u_email.value;
-			 var password = login_frm.u_password.value;
+			 var password = login_frm.u_password2.value;
 			 //alert(passwd);
 			 //var cont = {"email": "1234", "passwd": "1234"};//
 			 var cont = {"email":email,"passwd":password};
@@ -70,7 +78,7 @@
 			    data: conte,
 			    contentType: 'charset=UTF-8',
 			    success: function(result){ 
-       				//alert("Success"); 
+					window.location.href="index.php";
     			}
 			  });
 		}
@@ -83,7 +91,6 @@
 			<div class="login-panel panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Inventory System</h3>
-					<i><a href = "register_page.php">Not registered? Click here.</a></i>
 				</div>
 					<div class="panel-body">
 					
@@ -95,56 +102,14 @@
 									<span id="EmailError" class="red" >&nbsp;</span>
 								</div>
                                 <div class="form-group">
-                                    <input type="password" name="u_password" placeholder="Your Password" size="37" oninput="check_pw();"/>
-			<span id="PwError" class="red">&nbsp;</span>
-			<br><input class="btn" type="submit" name="login_btn" value="Sign In">
+                                    <input type="password" name="u_password1" placeholder="Your Password" size="37" oninput="check_pw();"/>
+								<span id="PwError1" class="red">&nbsp;</span>
+								<div class="form-group">
+                                    <input type="password" name="u_password2" placeholder="Your Password Again." size="37" oninput="check_same();"/>
+								<span id="PwError2" class="red">&nbsp;</span>
+			<br>
+					<button class="btn" onclick="doUserRegister();">Register</button>
 
 		</form>
 	</body>
 </html>
-
-<?php
-
-	if(isset($_POST["login_btn"]))
-	{
-		$user_email		= $_POST["u_email"];
-		$user_password 	= $_POST["u_password"];
-		$_SESSION["email"] = $user_email;
-		//echo $SESSION["email"];
-		$user_password = md5($user_password); //password encryption
-		
-		//vunerable by sql injection attack
-		/*$sql_login	= "SELECT uid,uname from users where uemail='$user_email' and upw='$user_password'";
-		//$result_login = $conn->query($sql_login);*/
-		
-		$stmt = $conn->prepare("SELECT uid,uname,ugroup,ufirst_login FROM users WHERE uemail=? and upw=?");
-		$stmt->bind_param("ss", $user_email, $user_password);
-		$stmt->execute();
-		
-		$result_login = $stmt->get_result();
-		$stmt->close();
-		
-		if($row = $result_login->fetch_assoc())
-		{
-			$_SESSION["sess_uid"] = $row["uid"];
-			$_SESSION["sess_uname"] = $row["uname"];
-			$_SESSION["sess_ugroup"] = $row["ugroup"];
-			
-			if($row["ufirst_login"] == '1'){
-				header("Location: setNewPassword.php");
-			}
-			else{
-				header("Location: inv_menu.php");
-			}
-		}
-		else
-		{
-			echo '<script type = "text/javascript">';
-			echo 'alert("Invalid Email or Password");';
-			echo 'window.location.assign("index.php")';
-			echo '</script>';
-			
-			//header("Location: index.php");
-		}
-	}
-?>

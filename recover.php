@@ -1,5 +1,18 @@
 <?php
 	require_once 'php_function/general.php'; //general php function
+	require_once 'php_function/function_report.php';
+	
+	/*get user information*/
+	$user_name = $_SESSION["sess_uname"];
+	$user_id = $_SESSION["sess_uid"];
+	$user_grroup = $_SESSION["sess_ugroup"];
+
+
+	/*2 level user cannnot visit this page*/
+	if($user_grroup == 2)
+	{
+		header("Location: index.php");
+	}
 	if(isset($_GET["cmdid"]))
 	{
 		$id= $_GET["cmdid"];
@@ -23,7 +36,7 @@
 
 			/*echo $cmd." ".$obj_id;
 			echo "<br>";*/
-			if($cmd == "CREATE")//recover create
+			if($cmd == "CREATE" || $cmd == "RECOVERED")//recover create
 			{
 				$sql_delete_med = 'UPDATE mst_medicine SET deleted = "1" WHERE drug_id = "'.$obj_id.'";';
 				$conn->query($sql_delete_med);
